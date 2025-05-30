@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script>
+      class AppComponent extends HTMLElement {
+        constructor() {
+          super();
+
+          this.attachShadow({ mode: "open" });
+
+          const wrapper = document.createElement("div");
+          wrapper.innerHTML = `<p>¡Hola, soy un Web Component!</p>`;
+
+          this.shadowRoot.appendChild(wrapper);
+        }
+      }
+      customElements.define("app-component", AppComponent);
+    </script>
+  </head>
+  <body>
+    <app-component></app-component>
+  </body>
+</html>
+ 
