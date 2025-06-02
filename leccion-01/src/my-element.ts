@@ -1,27 +1,17 @@
 import { LitElement, html, css } from 'lit';
 import { customElement, state } from 'lit/decorators.js';
-//import litLogo from './assets/lit.svg'
-//import viteLogo from '/vite.svg'
-
-/**
- * An example element.
- *
- * @slot - This element has a slot
- * @csspart button - The button
- */
+import './poke-api.ts';
 
 @customElement('my-element')
 export class MyElement extends LitElement {
-  /**
-   * Copy for the read the docs hint.
-   */
   @state() private username = '';
   @state() private password = '';
   @state() private errorMessage = '';
+  @state() private isLoggedIn = false;
 
   static styles = css`
     :host {
-      color: gray;
+      color: black;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -32,14 +22,14 @@ export class MyElement extends LitElement {
     }
 
     .container {
-      background: rgba(255, 255, 255, 0.1); /* fondo semitransparente */
-      backdrop-filter: blur(10px);         /* efecto de desenfoque detrás */
-      border: 1px solid rgba(255, 255, 255, 0.2); /* borde tenue */
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
       padding: 2rem;
       border-radius: 8px;
       width: 100%;
       max-width: 320px;
-      box-shadow: 0 0 10px rgba(105, 101, 101, 0);
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0);
       display: flex;
       flex-direction: column;
     }
@@ -47,10 +37,10 @@ export class MyElement extends LitElement {
     h2 {
       text-align: center;
       margin-bottom: 1rem;
+      color: white;
     }
 
     input {
-      color: gray;
       margin-bottom: 1rem;
       padding: 0.5rem;
       font-size: 1rem;
@@ -84,24 +74,37 @@ export class MyElement extends LitElement {
 
   render() {
     return html`
-      <div class="container">
-        <h2>Login</h2>
-        ${this.errorMessage ? html`<div class="error">${this.errorMessage}</div>` : ''}
-        <input
-          type="text"
-          placeholder="Email"
-          .value=${this.username}
-          @input=${(e: Event) => (this.username = (e.target as HTMLInputElement).value)}
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          .value=${this.password}
-          @input=${(e: Event) => (this.password = (e.target as HTMLInputElement).value)}
-        />
-        <button @click=${this.login}>Login</button>
-        <a href="#" style="margin-top: 1rem; text-align: center; display: block; color: white; text-decoration: underline;">¿Olvidaste tu contraseña?</a>
-      </div>
+      ${this.isLoggedIn
+        ? html`<poke-api></poke-api>`
+        : html`
+            <div class="container">
+              <h2>Login</h2>
+              ${this.errorMessage
+                ? html`<div class="error">${this.errorMessage}</div>`
+                : ''}
+              <input
+                type="text"
+                placeholder="Email"
+                .value=${this.username}
+                @input=${(e: Event) =>
+                  (this.username = (e.target as HTMLInputElement).value)}
+              />
+              <input
+                type="password"
+                placeholder="Password"
+                .value=${this.password}
+                @input=${(e: Event) =>
+                  (this.password = (e.target as HTMLInputElement).value)}
+              />
+              <button @click=${this.login}>Login</button>
+              <a
+                href="#"
+                style="margin-top: 1rem; text-align: center; display: block; color: white; text-decoration: underline;"
+              >
+                ¿Olvidaste tu contraseña?
+              </a>
+            </div>
+          `}
     `;
   }
 
@@ -116,16 +119,10 @@ export class MyElement extends LitElement {
 
     if (this.username === storedUser && this.password === storedPass) {
       this.errorMessage = '';
-      alert(`Es correcto tu usuario y contraseña`);
+      this.isLoggedIn = true;
     } else {
       this.errorMessage = 'Usuario o contraseña incorrectos';
     }
-  }
-
-  connectedCallback(): void {
-    super.connectedCallback();
-    localStorage.setItem('login_user', 'luis.aguilarm@axity.com');
-    localStorage.setItem('login_pass', '1234');
   }
 }
 
@@ -134,3 +131,4 @@ declare global {
     'my-element': MyElement;
   }
 }
+
